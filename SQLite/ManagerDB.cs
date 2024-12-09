@@ -41,9 +41,12 @@
             {
                 if (lastMatchSQl.MatchDate == item.MatchDate)
                 {
-                    db.MatchCalendarItemSQLite.Remove(item);
-                    db.SaveChanges();
-                    Program.SendAlert(2, lastMatchSQl, lastMatch);
+                    if (Program.isCanSendAlert())
+                    {
+                        db.MatchCalendarItemSQLite.Remove(item);
+                        db.SaveChanges();
+                        Program.SendAlert(2, lastMatchSQl, lastMatch);
+                    }
                 }
             }
         }
@@ -56,18 +59,23 @@
                 DateTime itemMatchDate = new DateTime(int.Parse(dates[(int)arrayDateIndexes.year]), int.Parse(dates[(int)arrayDateIndexes.month]), int.Parse(dates[(int)arrayDateIndexes.day]));
                 if (itemMatchDate.Subtract(DateTime.Today).Days <= 1 && !item.isOneDayNotify)
                 {
-                    
-                    item.isOneDayNotify = true;
-                    db.MatchCalendarItemSQLite.Update(item);
-                    db.SaveChanges();
-                    Program.SendAlert(1, item);
+                    if (Program.isCanSendAlert())
+                    {
+                        item.isOneDayNotify = true;
+                        db.MatchCalendarItemSQLite.Update(item);
+                        db.SaveChanges();
+                        Program.SendAlert(1, item);
+                    }
                 }
                 else if(itemMatchDate.Subtract(DateTime.Today).Days <= 7 && !item.isSevenDayNotify)
                 {
-                    item.isSevenDayNotify = true;
-                    db.MatchCalendarItemSQLite.Update(item);
-                    db.SaveChanges();
-                    Program.SendAlert(0, item);
+                    if (Program.isCanSendAlert())
+                    {
+                        item.isSevenDayNotify = true;
+                        db.MatchCalendarItemSQLite.Update(item);
+                        db.SaveChanges();
+                        Program.SendAlert(0, item);
+                    }
                 }
             }           
         }

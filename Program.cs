@@ -15,6 +15,9 @@ namespace TOZTestApp
         
         static async Task Main(string[] args)
         {
+            HtmlParser htmlParser = new HtmlParser();
+            TimerCallback tm = new TimerCallback(ParsePage);
+            Timer timer = new Timer(tm, htmlParser, 15, UpdateTime);
             //Ниже бот
             using var cts = new CancellationTokenSource();
             var bot = new TelegramBotClient("8170346717:AAGuUli9FlzvpPdEc6AoWTxaoprlwX-ERZk", cancellationToken: cts.Token);
@@ -73,10 +76,7 @@ namespace TOZTestApp
                             message = msg;
                             await botClient.SendMessage(message.Chat, $"Парсинг обновлён",
                              parseMode: ParseMode.Html, linkPreviewOptions: true,
-                                replyMarkup: new ReplyKeyboardRemove());
-                            HtmlParser htmlParser = new HtmlParser();
-                            TimerCallback tm = new TimerCallback(ParsePage);
-                            Timer timer = new Timer(tm, htmlParser, 15, UpdateTime);        
+                                replyMarkup: new ReplyKeyboardRemove());                            
                         }
                         break;
                 }
@@ -135,6 +135,14 @@ namespace TOZTestApp
                     });
                     break;
             }
+        }
+        public static  bool isCanSendAlert()
+        {
+            if (message != null)
+            {
+                return true;
+            }
+            return false;
         }
         public static void ParsePage(object obj)
         {
